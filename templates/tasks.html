@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>НикPlay Планировщик</title>
+</head>
+<body class="theme-{{ user.theme }}">
+    <audio id="bell" src="https://www.myinstants.com/media/sounds/ding-sound-effect.mp3"></audio>
+
+    <header>
+        <div class="theme-bar">
+            <a href="/change_theme/purple" class="dot p-p"></a>
+            <a href="/change_theme/green" class="dot p-g"></a>
+            <a href="/change_theme/sunset" class="dot p-s"></a>
+            <a href="/change_theme/ocean" class="dot p-o"></a>
+        </div>
+        <h1>Привет, {{ session['username'] }}!</h1>
+        <a href="https://t.me/TaskBot_Helper_bot" target="_blank" style="display:inline-block; margin-bottom:15px; background:rgba(255,255,255,0.2); color:white; padding:5px 15px; border-radius:20px; text-decoration:none; font-weight:bold; border: 1px solid white;">🤖 Наш Telegram-бот (Оценить сайт)</a>
+
+        <div class="header-links">
+    <div class="sort-box">
+        <a href="/community" style="background: white; color: black; padding: 2px 8px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-right: 15px;">🌐 Сообщество</a>
+        Сортировать:
+        <a href="?sort=priority&category={{ selected_cat }}" class="{{ 'active' if sort_mode=='priority' }}">Важность</a>
+        <a href="?sort=time&category={{ selected_cat }}" class="{{ 'active' if sort_mode=='time' }}">Время</a>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+        <a href="/toggle_public" title="Если включено, другие пользователи увидят твои задачи" style="color: white; font-size: 0.9em; text-decoration: none; border: 1px solid white; padding: 3px 8px; border-radius: 8px;">
+            {{ '🔓 Профиль Открыт' if user.is_public else '🔒 Профиль Скрыт' }}
+        </a>
+        <a href="/logout" class="exit">Выйти</a>
+    </div>
+</div>
+    </header>
+
+    <div class="main-card">
+        <div class="nav-bar">
+            <input type="date" value="{{ current_date }}" onchange="location='/tasks/'+this.value">
+            <select onchange="location='/tasks/{{ current_date }}?category='+this.value">
+                <option value="Все">Все категории</option>
+                {% for cat in categories %}<option value="{{ cat }}" {{ 'selected' if selected_cat == cat }}>{{ cat }}</option>{% endfor %}
+            </select>
+        </div>
+
+        <form action="/add_task" method="POST" class="add-form">
+            <input type="hidden" name="date" value="{{ current_date }}">
+            <div class="row">
+                <input type="text" name="content" placeholder="Что сделать?" required>
+                <input type="text" name="category" placeholder="Категория" list="cat-list">
+                <select name="priority">
+                    <option value="Высокая">🔥 Высокая</option>
+                    <option value="Средняя" selected>⚡ Средняя</option>
+                    <option value="Низкая">💤 Низкая</option>
+                </select>
+            </div>
+            <div class="row">С: <input type="time" name="time_start"> До: <input type="time" name="time_end"></div>
+            <div class="repeat-box">
+                Повторять:
+                <label><input type="checkbox" name="repeat_days" value="0"> Пн</label>
+                <label><input type="checkbox" name="repeat_days" value="1"> Вт</label>
+                <label><input type="checkbox" name="repeat_days" value="2"> Ср</label>
+                <label><input type="checkbox" name="repeat_days" value="3"> Чт</label>
+                <label><input type="checkbox" name="repeat_days" value="4"> Пт</label>
+                <label><input type="checkbox" name="repeat_days" value="5"> Сб</label>
+                <label><input type="checkbox" name="repeat_days" value="6"> Вс</label>
+                на <input type="number" name="repeat_count" min="0" placeholder="0" style="width: 40px;"> нед.
+            </div>
+            <button type="submit" class="main-btn">Добавить задачу</button>
+        </form>
+
+        <table>
+            <thead><tr><th>Задача</th><th>Важность</th><th>Время</th><th>Заметка</th><th>Готово</th><th>Действия</th></tr></thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr class="{{ 'is-done' if task.completed }}">
+                    <td><span class="tag">{{ task.category }}</span><br><strong>{{ task.content }}</strong></td>
+                    <td class="prio-{{ task.priority }}">{{ task.priority }}</td>
+                    <td>
+                        {% if task.time_start %}
+                            {{ task.time_start }}{% if task.time_end %} — {{ task.time_end }}{% endif %}
+                        {% else %}
+                            --:--
+                        {% endif %}
+                    </td>
+                    <td>
+                        <details><summary>➔</summary>
+                            <form action="/update_note_action/{{ task.id }}" method="POST" class="note-edit">
+                                <textarea name="note">{{ task.description }}</textarea>
+                                <div class="note-btns">
+                                    <button type="submit" name="action" value="only_this" title="Только сюда">💾</button>
+                                    <button type="submit" name="action" value="future_tasks" title="Во все будущие такие же">📅+</button>
+                                    <button type="submit" name="action" value="category_all" title="Во всю категорию">📁+</button>
+                                </div>
+                            </form>
+                        </details>
+                    </td>
+                    <td><a href="/toggle/{{ task.id }}" class="check" onclick="if('{{ task.completed }}' == 'False') { document.getElementById('bell').currentTime=0; document.getElementById('bell').play(); }">{{ '✅' if task.completed else '⬜' }}</a></td>
+                    <td>
+                        <div class="actions">
+                            <details><summary title="Редактировать">✏️</summary>
+                                <form action="/edit_task/{{ task.id }}" method="POST" class="edit-inline">
+                                    <input type="text" name="content" value="{{ task.content }}" required>
+                                    <select name="priority">
+                                        <option value="Высокая" {{'selected' if task.priority=='Высокая'}}>Высокая</option>
+                                        <option value="Средняя" {{'selected' if task.priority=='Средняя'}}>Средняя</option>
+                                        <option value="Низкая" {{'selected' if task.priority=='Низкая'}}>Низкая</option>
+                                    </select>
+                                    <button type="submit">OK</button>
+                                </form>
+                            </details>
+                            <a href="/delete/{{ task.id }}" class="del" onclick="return confirm('Удалить?')">🗑️</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
