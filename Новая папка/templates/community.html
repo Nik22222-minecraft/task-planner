@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Сообщество - NikPlay</title>
+</head>
+<body class="theme-{{ user.theme }}">
+    <header>
+        <h1>🌐 Публичные задачи ({{ today }})</h1>
+        <div class="header-links" style="justify-content: center; margin-top: 15px;">
+            <a href="/" style="background: white; color: black; padding: 5px 15px; border-radius: 10px; text-decoration: none; font-weight: bold;">⬅ Вернуться к моим задачами</a>
+        </div>
+    </header>
+
+    <div class="main-card">
+        {% if not community_data %}
+            <h3 style="text-align:center; color:#555;">Пока никто не открыл свой профиль. Будь первым!</h3>
+        {% else %}
+            {% for data in community_data %}
+            <div style="background: #f9f9f9; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #ddd;">
+                <h3 style="margin-top:0; color: #764ba2;">👤 {{ data.username }}</h3>
+                
+                {% if data.tasks %}
+                <table>
+                    <thead><tr><th>Задача</th><th>Важность</th><th>Время</th><th>Готово</th></tr></thead>
+                    <tbody>
+                        {% for task in data.tasks %}
+                        <tr class="{{ 'is-done' if task.completed }}">
+                            <td><span class="tag">{{ task.category }}</span> <strong>{{ task.content }}</strong></td>
+                            <td class="prio-{{ task.priority }}">{{ task.priority }}</td>
+                            <td>{{ task.time_start or '--' }}</td>
+                            <td>{{ '✅' if task.completed else '⬜' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p style="color: #777; font-size: 0.9em;">У пользователя нет задач на сегодня.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>

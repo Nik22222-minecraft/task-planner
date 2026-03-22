@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ 'Вход' if request.path == '/login' else 'Регистрация' }} - NikPlay</title>
+</head>
+<body class="auth-page theme-purple">
+    <div class="auth-card">
+        <h2>{{ 'Вход в систему' if request.path == '/login' else 'Регистрация' }}</h2>
+        
+        <form action="{{ request.path }}" method="POST">
+            <input type="text" name="username" placeholder="Логин" required>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit" class="main-btn">{{ 'Войти' if request.path == '/login' else 'Создать аккаунт' }}</button>
+        </form>
+        
+        <br>
+        {% if request.path == '/login' %}
+            <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+        {% else %}
+            <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+        {% endif %}
+    </div>
+</body>
+</html>

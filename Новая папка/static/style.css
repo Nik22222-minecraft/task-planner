@@ -1,0 +1,46 @@
+body { margin: 0; min-height: 100vh; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; transition: 0.5s; padding-bottom: 50px; }
+
+/* ТЕМЫ И ФОН */
+.theme-purple, .auth-page { background: linear-gradient(135deg, #667eea, #764ba2); }
+.theme-green { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.theme-sunset { background: linear-gradient(135deg, #f12711, #f5af19); }
+.theme-ocean { background: linear-gradient(135deg, #2b5876, #4e4376); }
+
+header { color: white; text-align: center; margin: 20px 0; width: 95%; max-width: 950px; }
+.theme-bar { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+.dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
+.p-p { background: #764ba2; } .p-g { background: #38ef7d; } .p-s { background: #f5af19; } .p-o { background: #2b5876; }
+
+.main-card { background: white; width: 95%; max-width: 950px; padding: 25px; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+
+/* ЦВЕТА ВАЖНОСТИ (ПРИОРИТЕТОВ) */
+.prio-Высокая { color: #d9534f; font-weight: bold; background: #fff5f5; border-radius: 5px; padding: 3px 8px; display: inline-block; }
+.prio-Средняя { color: #f0ad4e; font-weight: bold; background: #fffdf5; border-radius: 5px; padding: 3px 8px; display: inline-block; }
+.prio-Низкая { color: #5cb85c; font-weight: bold; background: #f5fff5; border-radius: 5px; padding: 3px 8px; display: inline-block; }
+
+/* ФОРМА АВТОРИЗАЦИИ ПО ЦЕНТРУ */
+.auth-page { justify-content: center; align-items: center; }
+.auth-card { background: white; padding: 40px; border-radius: 20px; text-align: center; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.auth-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.auth-card button { width: 100%; padding: 12px; background: #764ba2; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+/* ТАБЛИЦА И ЭЛЕМЕНТЫ */
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+.tag { font-size: 0.65em; background: #eee; padding: 2px 5px; border-radius: 4px; color: #777; font-weight: bold; }
+.is-done { opacity: 0.4; background: #fafafa; }
+.is-done strong { text-decoration: line-through; }
+
+/* ЗАМЕТКИ И РЕДАКТИРОВАНИЕ */
+summary { cursor: pointer; list-style: none; font-weight: bold; color: #764ba2; }
+.note-edit, .edit-inline { background: #fffde7; padding: 10px; border-radius: 8px; margin-top: 5px; display: flex; flex-direction: column; gap: 5px; border: 1px solid #ffe57f; }
+textarea { width: 100%; height: 60px; border: 1px solid #ddd; border-radius: 4px; padding: 8px; font-family: inherit; resize: vertical; }
+.note-btns, .actions { display: flex; gap: 6px; }
+.note-btns button { font-size: 1.1em; padding: 4px 8px; cursor: pointer; background: white; border: 1px solid #ccc; border-radius: 6px; }
+
+.main-btn { background: #764ba2; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
+.exit { color: white; font-size: 0.8em; opacity: 0.7; text-decoration: none; border: 1px solid white; padding: 3px 8px; border-radius: 8px; }
+.sort-box a { color: white; text-decoration: none; margin-left: 8px; opacity: 0.6; }
+.sort-box a.active { opacity: 1; font-weight: bold; text-decoration: underline; }
+
+.repeat-box label { margin-right: 5px; cursor: pointer; }
