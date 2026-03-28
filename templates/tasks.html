@@ -26,8 +26,18 @@
     </div>
 
     <div style="display:flex; gap:10px; align-items:center;">
-        <a href="/toggle_public" title="Если включено, другие пользователи увидят твои задачи" style="color: white; font-size: 0.9em; text-decoration: none; border: 1px solid white; padding: 3px 8px; border-radius: 8px;">
-            {{ '🔓 Профиль Открыт' if user.is_public else '🔒 Профиль Скрыт' }}
+        <form action="/set_timezone" method="POST" style="margin: 0;">
+            <select name="timezone" onchange="this.form.submit()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white; border-radius: 8px; padding: 3px; font-weight: bold; outline: none; cursor: pointer;">
+                <option value="2" style="color: black;" {% if user.timezone == 2 %}selected{% endif %}>🕒 UTC+2</option>
+                <option value="3" style="color: black;" {% if user.timezone == 3 %}selected{% endif %}>🕒 UTC+3 (МСК)</option>
+                <option value="4" style="color: black;" {% if user.timezone == 4 %}selected{% endif %}>🕒 UTC+4</option>
+                <option value="5" style="color: black;" {% if user.timezone == 5 %}selected{% endif %}>🕒 UTC+5 (Астана/ЕКБ)</option>
+                <option value="6" style="color: black;" {% if user.timezone == 6 %}selected{% endif %}>🕒 UTC+6</option>
+            </select>
+        </form>
+
+        <a href="/toggle_public" title="Если включено, другие увидят твои задачи" style="color: white; font-size: 0.9em; text-decoration: none; border: 1px solid white; padding: 3px 8px; border-radius: 8px;">
+            {{ '🔓 Открыт' if user.is_public else '🔒 Скрыт' }}
         </a>
         <a href="/logout" class="exit">Выйти</a>
     </div>
