@@ -28,19 +28,27 @@ last_clear_day = datetime.utcnow().day
 @app.route('/secret_ping_reminders')
 def secret_ping_reminders():
     global reminded_tasks, last_clear_day
-    
+
     current_utc_day = datetime.utcnow().day
     if current_utc_day != last_clear_day:
         reminded_tasks.clear()
         last_clear_day = current_utc_day
-        
+
     users = User.query.filter(User.telegram_id != None).all()
     for user in users:
         user_now = datetime.utcnow() + timedelta(hours=user.timezone)
         user_date = user_now.strftime('%Y-%m-%d')
         user_time = user_now.strftime('%H:%M')
-        
-        tasks = Task.query.filter_by(user_id=user.id, date=user_date, time_start=user_time, completed=False).all()
+
+        # МАГИЯ ЗДЕСЬ: time_start <= user_time (даже если сервер лагнет, он не пропустит задачу)
+        tasks = Task.query.filter(
+            Task.user_id == user.id,
+            Task.date == user_date,
+            Task.time_start != "",
+            Task.time_start <= user_time,
+            Task.completed == False
+        ).all()
+
         for t in tasks:
             if t.id not in reminded_tasks:
                 try:
